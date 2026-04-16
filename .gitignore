@@ -1,0 +1,29 @@
+### --- Mickey's Preview 专项忽略 ---
+# 隐私路径配置文件（包含宿主机真实绝对路径，强烈建议不要上传）
+paths.conf
+
+### --- Python 专项 ---
+# 字节码文件
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 虚拟环境
+.venv/
+venv/
+ENV/
+
+### --- Docker 专项 ---
+# 虽然 Dockerfile 和 compose 通常要上传，但有时会有临时导出的镜像
+*.tar
+*.tar.gz
+
+### --- IDE / 编辑器 (VS Code & JetBrains) ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+### --- 操作系统垃圾 ---
+.DS_Store
+Thumbs.db

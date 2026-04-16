@@ -1,0 +1,12 @@
+services:
+  preview:
+    image: python:3.11-alpine      # 极速、极小（约 50MB）
+    container_name: preview
+    volumes:
+      - ./:/app:ro               # 脚本所在目录只读
+      - /:/host:ro               # 根目录穿透只读
+    working_dir: /app
+    command: python3 preview.py
+    ports:
+      - "6033:6033"
+    restart: unless-stopped      # 尊重手动停止状态，更智能

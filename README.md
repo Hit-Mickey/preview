@@ -32,8 +32,6 @@
 
     `vim docker-compose.yml`
     ```yaml
-    name: preview-system
-
     services:
       preview:
         image: mickey666/preview:latest

@@ -34,15 +34,17 @@
     
     `vim docker-compose.yml`
     ```yaml
-    name: preview-system
-
     services:
       preview:
         image: mickey666/preview:latest
         container_name: preview
+        # 如果要设置密码请取消注释
+        # environment:
+          # - AUTH_USER=user
+          # - AUTH_PASS=1
         volumes:
-          - ./paths.conf:/app/paths.conf:ro    # Map the configuration file
-          - /:/host:ro                        # Read-only mapping of the host root
+          - ./paths.conf:/app/paths.conf:ro    # 映射配置文件
+          - /:/host:ro                        # 只读映射宿主机根目录
         ports:
           - "6033:6033"
         restart: unless-stopped
@@ -55,7 +57,7 @@
 
 4.  **Restart Service after changes**:
     ```bash
-    docker compose restart
+    docker compose dwon && docker compose up -d
     ```
 
 ---

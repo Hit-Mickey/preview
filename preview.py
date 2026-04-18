@@ -1,4 +1,11 @@
-import os, http.server, socketserver, urllib.parse, datetime
+import os, http.server, socketserver, urllib.parse, datetime, base64
+
+# --- 新增：从环境变量读取用户名和密码并生成认证密钥 ---
+AUTH_USER = os.environ.get('AUTH_USER')
+AUTH_PASS = os.environ.get('AUTH_PASS')
+AUTH_KEY = None
+if AUTH_USER and AUTH_PASS:
+    AUTH_KEY = "Basic " + base64.b64encode(f"{AUTH_USER}:{AUTH_PASS}".encode('utf-8')).decode('utf-8')
 
 # 1. 载入配置
 MAPPINGS = []
@@ -86,8 +93,8 @@ HTML_TPL = """
 
     <script>
         // 1. 默认值严格设为 name/asc
-        let currentSort = document.cookie.replace(/(?:(?:^|.*;\\s*)sort\\s*\\=\\s*([^;]*).*$)|^.*$/, "$1") || "name";
-        let currentOrder = document.cookie.replace(/(?:(?:^|.*;\\s*)order\\s*\\=\\s*([^;]*).*$)|^.*$/, "$1") || "asc";
+        let currentSort = document.cookie.replace(/(?:(?:^|.*;\s*)sort\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "name";
+        let currentOrder = document.cookie.replace(/(?:(?:^|.*;\s*)order\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "asc";
 
         function applySort(type, isFirstLoad = false) {{
             if (!isFirstLoad) {{
@@ -146,6 +153,16 @@ SVG_FILE = '<svg viewBox="0 0 24 24" width="22"><path d="M14 2H6c-1.1 0-1.99.9-1
 
 class DefaultSortHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
+        # --- 新增：如果配置了账号密码，校验 Authorization 头 ---
+        if AUTH_KEY and self.headers.get('Authorization') != AUTH_KEY:
+            self.send_response(401)
+            self.send_header('WWW-Authenticate', 'Basic realm="Login Required"')
+            self.send_header('Content-type', 'text/html; charset=utf-8')
+            self.end_headers()
+            self.wfile.write(b"401 Unauthorized")
+            return
+        # -----------------------------------------------------
+
         u = urllib.parse.urlparse(self.path)
         path = urllib.parse.unquote(u.path).strip('/')
         parts = path.split('/', 1)

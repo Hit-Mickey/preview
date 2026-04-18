@@ -36,6 +36,10 @@
       preview:
         image: mickey666/preview:latest
         container_name: preview
+        # 如果要设置密码请取消注释
+        # environment:
+          # - AUTH_USER=user
+          # - AUTH_PASS=1
         volumes:
           - ./paths.conf:/app/paths.conf:ro    # 映射配置文件
           - /:/host:ro                        # 只读映射宿主机根目录
@@ -51,7 +55,7 @@
 
 4.  **更改文件后重启服务**：
     ```bash
-    docker compose restart
+    docker compose dwon && docker compose up -d
     ```
 
 

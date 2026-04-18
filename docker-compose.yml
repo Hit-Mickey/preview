@@ -1,12 +1,15 @@
 services:
   preview:
-    image: python:3.11-alpine      # 极速、极小（约 50MB）
-    container_name: preview
+    image: python:3.11-alpine   
+    container_name: preview-dev
+    environment:
+      - AUTH_USER=mickey
+      - AUTH_PASS=1
     volumes:
-      - ./:/app:ro               # 脚本所在目录只读
-      - /:/host:ro               # 根目录穿透只读
+      - ./:/app:ro            
+      - /:/host:ro                
     working_dir: /app
     command: python3 preview.py
     ports:
-      - "6033:6033"
-    restart: unless-stopped      # 尊重手动停止状态，更智能
+      - "6034:6033"
+    restart: unless-stopped
